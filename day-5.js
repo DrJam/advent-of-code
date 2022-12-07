@@ -4,17 +4,6 @@ fs.readFile('./day-5.txt', 'utf8', (err, value) => {
     day5(value);
 })
 
-//             [Q]     [G]     [M]    
-//             [B] [S] [V]     [P] [R]
-//     [T]     [C] [F] [L]     [V] [N]
-// [Q] [P]     [H] [N] [S]     [W] [C]
-// [F] [G] [B] [J] [B] [N]     [Z] [L]
-// [L] [Q] [Q] [Z] [M] [Q] [F] [G] [D]
-// [S] [Z] [M] [G] [H] [C] [C] [H] [Z]
-// [R] [N] [S] [T] [P] [P] [W] [Q] [G]
-//  1   2   3   4   5   6   7   8   9 
-
-
 function day5(input) {
     let crates1 = [
         ['R', 'S', 'L', 'F', 'Q'],
@@ -29,7 +18,13 @@ function day5(input) {
     ];
     let crates2 = JSON.parse(JSON.stringify(crates1));
     let pattern = /move (\d+) from (\d+) to (\d+)/
-    let cmds = input.split('\r\n').map(x => pattern.exec(x)).map(x => ({ qty: parseInt(x[1]), from: parseInt(x[2]) - 1, to: parseInt(x[3]) - 1 }));
+    let cmds = input.split('\r\n')
+        .map(x => pattern.exec(x))
+        .map(x => ({
+            qty: parseInt(x[1]),
+            from: parseInt(x[2]) - 1,
+            to: parseInt(x[3]) - 1
+        }));
 
     cmds.forEach((cmd, i) => {
         for (let i = 0; i < cmd.qty; i++) {
