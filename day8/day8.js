@@ -1,9 +1,9 @@
-import * as fs from 'fs';
+import { readFile } from 'node:fs/promises';;
 
 function getVisible(lines) {
     let visible = 0;
     let high = -1;
-    let found = {}
+    let found = {};
 
     let saveFound = (x, y, n) => {
         found[`${x},${y}`] = true;
@@ -89,22 +89,22 @@ function getBestScore(lines) {
             score = score * runSightTest(lines, tree, x, y, -1, 0);
             if (score > best) best = score;
         });
-    })
-    return best
+    });
+    return best;
 }
 
 function run(input) {
     let lines = input.split('\r\n').map(line => line.split('').map(num => parseInt(num)));
     let visible = getVisible(lines);
-    let bestScore = getBestScore(lines)
+    let bestScore = getBestScore(lines);
 
 
-    console.log(`08a: ${visible}`)
-    console.log(`08b: ${bestScore}`)
+    console.log(`08a: ${visible}`);
+    console.log(`08b: ${bestScore}`);
 }
 
 function execute() {
-    fs.readFile('./day 8/day-8.txt', 'utf8', (err, value) => run(value))
+    readFile('./day8/day8.txt').then(value => run(value.toString()));
 }
 
-export { execute }
+export default { execute }

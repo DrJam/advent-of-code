@@ -1,4 +1,4 @@
-import * as fs from 'fs';
+import { readFile } from 'node:fs/promises';;
 
 function gameScore(opp, me) {
     let score = me - opp + 1;
@@ -17,22 +17,22 @@ function getNeededMove(opp, result) {
 function run(input) {
     let characterToScore = {
         A: 1, B: 2, C: 3, X: 1, Y: 2, Z: 3
-    }
+    };
     let games = input.split('\r\n').map(x => x.split(' ')).map(game => [characterToScore[game[0]], characterToScore[game[1]]]);
     let scores = games.map(x => gameScore(x[0], x[1]) + x[1]);
-    let total = scores.reduce((p, c) => p + c, 0)
+    let total = scores.reduce((p, c) => p + c, 0);
 
-    let part2Games = games.map(x => [...x, getNeededMove(x[0], x[1])])
+    let part2Games = games.map(x => [...x, getNeededMove(x[0], x[1])]);
     let part2Scores = part2Games.map(x => gameScore(x[0], x[2]) + x[2]);
-    let part2Total = part2Scores.reduce((p, c) => p + c, 0)
+    let part2Total = part2Scores.reduce((p, c) => p + c, 0);
 
-    console.log(`02a: ${total}`)
-    console.log(`02b: ${part2Total}`)
+    console.log(`02a: ${total}`);
+    console.log(`02b: ${part2Total}`);
 }
 
 
 function execute() {
-    fs.readFile('./day 2/day-2.txt', 'utf8', (err, value) => run(value));
+    readFile('./day2/day2.txt').then(value => run(value.toString()));
 }
 
-export { execute }
+export default { execute }

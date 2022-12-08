@@ -1,4 +1,4 @@
-import * as fs from 'fs';
+import { readFile } from 'node:fs/promises';;
 
 function run(input) {
     const min = 0, max = 1;
@@ -15,12 +15,12 @@ function run(input) {
         return sum;
     }, 0);
 
-    console.log(`04a: ${countTotalOverlap}`)
-    console.log(`04b: ${countAnyOverlap}`)
+    console.log(`04a: ${countTotalOverlap}`);
+    console.log(`04b: ${countAnyOverlap}`);
 }
 
 function execute() {
-    fs.readFile('./day 4/day-4.txt', 'utf8', (err, value) => run(value));
+    readFile('./day4/day4.txt').then(value => run(value.toString()));
 }
 
-export { execute }
+export default { execute }

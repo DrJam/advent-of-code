@@ -1,4 +1,4 @@
-import * as fs from 'fs';
+import { readFile } from 'node:fs/promises';
 
 function run(input) {
     //split input string by double newline
@@ -11,16 +11,14 @@ function run(input) {
     let sums = ints.map(elf => elf.reduce((p, c) => p + c, 0)).sort((a, b) => b - a);
 
     //list the first sum
-    console.log(`01a: ${sums[0]}`)
+    console.log(`01a: ${sums[0]}`);
 
     //take the top 3 sums and sum them
-    console.log(`01b: ${sums.slice(0, 3).reduce((p, c) => p + c, 0)}`)
+    console.log(`01b: ${sums.slice(0, 3).reduce((p, c) => p + c, 0)}`);
 }
 
 function execute() {
-    fs.readFile('./day 1/day-1.txt', 'utf8', (err, data) => {
-        run(data)
-    });
+    readFile('./day1/day1.txt').then(value => run(value.toString()));
 }
 
-export { execute };
+export default { execute }

@@ -1,4 +1,4 @@
-import * as fs from 'fs';
+import { readFile } from 'node:fs/promises';;
 
 function getSize(dir, smallDirs, folderSizes) {
     let sizes = [];
@@ -36,7 +36,7 @@ function preprocess(input) {
         .map(group => group.split('\r\n')
             .filter(line => line != ''))
         .filter(group => group.length > 0)
-        .map(group => group.map(line => line.split(' ')))
+        .map(group => group.map(line => line.split(' ')));
 }
 
 function run(input) {
@@ -51,8 +51,8 @@ function run(input) {
     let currentDir = root;
 
     cmdGroups.forEach((group) => {
-        let inputs = group[0]
-        let outputs = group.slice(1, group.length)
+        let inputs = group[0];
+        let outputs = group.slice(1, group.length);
 
         if (inputs[0] == 'cd') {
             if (inputs[1] == '..') {
@@ -64,7 +64,7 @@ function run(input) {
             } else {
                 if (inputs[1] == '/' && currentDir.name == '/') return; //don't duplicate root
 
-                currentDir = findOrMakeChildDir(currentDir, inputs[1])
+                currentDir = findOrMakeChildDir(currentDir, inputs[1]);
             }
         }
 
@@ -76,9 +76,9 @@ function run(input) {
                     currentDir.files.push({
                         size: parseInt(outputGroup[0]),
                         name: outputGroup[1]
-                    })
+                    });
                 }
-            })
+            });
         }
 
     });
@@ -91,15 +91,15 @@ function run(input) {
     let freeSpace = totalDisk - totalSize;
     let minSize = need - freeSpace;
 
-    folderSizes = folderSizes.sort((a, b) => a - b)
+    folderSizes = folderSizes.sort((a, b) => a - b);
     let firstBigEnough = folderSizes.find(x => x >= minSize);
 
-    console.log(`07a: ${smallDirs.reduce((p, c) => p + c, 0)}`)
-    console.log(`07b: ${firstBigEnough}`)
+    console.log(`07a: ${smallDirs.reduce((p, c) => p + c, 0)}`);
+    console.log(`07b: ${firstBigEnough}`);
 }
 
 function execute() {
-    fs.readFile('./day 7/day-7.txt', 'utf8', (err, value) => run(value))
+    readFile('./day7/day7.txt').then(value => run(value.toString()));
 }
 
-export { execute }
+export default { execute }

@@ -1,4 +1,4 @@
-import * as fs from 'fs';
+import { readFile } from 'node:fs/promises';;
 
 function getMatchIndex(chars, targetSize) {
     for (let i = targetSize; i < chars.length; i++) {
@@ -13,12 +13,12 @@ function getMatchIndex(chars, targetSize) {
 function run(input) {
     let chars = input.split('');
 
-    console.log(`06a: ${getMatchIndex(chars, 4)}`)
-    console.log(`06b: ${getMatchIndex(chars, 14)}`)
+    console.log(`06a: ${getMatchIndex(chars, 4)}`);
+    console.log(`06b: ${getMatchIndex(chars, 14)}`);
 }
 
 function execute() {
-    fs.readFile('./day 6/day-6.txt', 'utf8', (err, value) => run(value))
+    readFile('./day6/day6.txt').then(value => run(value.toString()));
 }
 
-export { execute }
+export default { execute }

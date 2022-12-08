@@ -1,4 +1,4 @@
-import * as fs from 'fs';
+import { readFile } from 'node:fs/promises';;
 
 function run(input) {
     let backpacks = input.split('\n')
@@ -14,15 +14,15 @@ function run(input) {
 
     let sumTriples = 0;
     for (let i = 0; i < backpacks.length; i += 3) {
-        sumTriples += backpacks[i].find(x => backpacks[i + 1].some(y => x == y) && backpacks[i + 2].some(z => x == z))
+        sumTriples += backpacks[i].find(x => backpacks[i + 1].some(y => x == y) && backpacks[i + 2].some(z => x == z));
     }
 
-    console.log(`03a: ${sumDoubles}`)
-    console.log(`03b: ${sumTriples}`)
+    console.log(`03a: ${sumDoubles}`);
+    console.log(`03b: ${sumTriples}`);
 }
 
 function execute() {
-    fs.readFile('./day 3/day-3.txt', 'utf8', (err, value) => run(value));
+    readFile('./day3/day3.txt').then(value => run(value.toString()));
 }
 
-export { execute }
+export default { execute }
