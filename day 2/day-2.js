@@ -1,16 +1,4 @@
-const fs = require('fs');
-
-fs.readFile('./day-2.txt', 'utf8', (err, value) => {
-    day2(value);
-})
-
-// The winner of the whole tournament is the player with the highest score. 
-// Your total score is the sum of your scores for each round. 
-// The score for a single round is the score for the shape you selected (1 for Rock, 2 for Paper, and 3 for Scissors) 
-//     plus the score for the outcome of the round (0 if you lost, 3 if the round was a draw, and 6 if you won).
-
-// X means you need to lose, Y means you need to end the round in a draw, and Z means you need to win
-
+import * as fs from 'fs';
 
 function gameScore(opp, me) {
     let score = me - opp + 1;
@@ -26,7 +14,7 @@ function getNeededMove(opp, result) {
     return output;
 }
 
-function day2(input) {
+function run(input) {
     let characterToScore = {
         A: 1, B: 2, C: 3, X: 1, Y: 2, Z: 3
     }
@@ -38,6 +26,13 @@ function day2(input) {
     let part2Scores = part2Games.map(x => gameScore(x[0], x[2]) + x[2]);
     let part2Total = part2Scores.reduce((p, c) => p + c, 0)
 
-    console.log(total, part2Total)
-    debugger;
+    console.log(`02a: ${total}`)
+    console.log(`02b: ${part2Total}`)
 }
+
+
+function execute() {
+    fs.readFile('./day 2/day-2.txt', 'utf8', (err, value) => run(value));
+}
+
+export { execute }

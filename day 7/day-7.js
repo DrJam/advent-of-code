@@ -1,8 +1,4 @@
-const fs = require('fs');
-
-fs.readFile('./day-7.txt', 'utf8', (err, value) => {
-    day7(value);
-})
+import * as fs from 'fs';
 
 function getSize(dir, smallDirs, folderSizes) {
     let sizes = [];
@@ -43,7 +39,7 @@ function preprocess(input) {
         .map(group => group.map(line => line.split(' ')))
 }
 
-function day7(input) {
+function run(input) {
     let cmdGroups = preprocess(input);
 
     let root = {
@@ -98,9 +94,12 @@ function day7(input) {
     folderSizes = folderSizes.sort((a, b) => a - b)
     let firstBigEnough = folderSizes.find(x => x >= minSize);
 
-    console.log(totalSize);
-    console.log(smallDirs.reduce((p, c) => p + c, 0));
-    console.log(totalDisk, need, minSize, firstBigEnough);
-
-
+    console.log(`07a: ${smallDirs.reduce((p, c) => p + c, 0)}`)
+    console.log(`07b: ${firstBigEnough}`)
 }
+
+function execute() {
+    fs.readFile('./day 7/day-7.txt', 'utf8', (err, value) => run(value))
+}
+
+export { execute }

@@ -1,8 +1,4 @@
-const fs = require('fs');
-
-fs.readFile('./day-8.txt', 'utf8', (err, value) => {
-    day8(value);
-})
+import * as fs from 'fs';
 
 function getVisible(lines) {
     let visible = 0;
@@ -97,11 +93,18 @@ function getBestScore(lines) {
     return best
 }
 
-function day8(input) {
+function run(input) {
     let lines = input.split('\r\n').map(line => line.split('').map(num => parseInt(num)));
     let visible = getVisible(lines);
     let bestScore = getBestScore(lines)
 
-    console.log(visible)
-    console.log(bestScore)
-} 
+
+    console.log(`08a: ${visible}`)
+    console.log(`08b: ${bestScore}`)
+}
+
+function execute() {
+    fs.readFile('./day 8/day-8.txt', 'utf8', (err, value) => run(value))
+}
+
+export { execute }

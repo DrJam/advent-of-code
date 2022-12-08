@@ -1,8 +1,4 @@
-const fs = require('fs');
-
-fs.readFile('./day-6.txt', 'utf8', (err, value) => {
-    day6(value);
-})
+import * as fs from 'fs';
 
 function getMatchIndex(chars, targetSize) {
     for (let i = targetSize; i < chars.length; i++) {
@@ -14,9 +10,15 @@ function getMatchIndex(chars, targetSize) {
     }
 }
 
-function day6(input) {
+function run(input) {
     let chars = input.split('');
 
-    console.log(getMatchIndex(chars, 4))
-    console.log(getMatchIndex(chars, 14))
+    console.log(`06a: ${getMatchIndex(chars, 4)}`)
+    console.log(`06b: ${getMatchIndex(chars, 14)}`)
 }
+
+function execute() {
+    fs.readFile('./day 6/day-6.txt', 'utf8', (err, value) => run(value))
+}
+
+export { execute }

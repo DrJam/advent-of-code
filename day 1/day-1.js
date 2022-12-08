@@ -1,10 +1,6 @@
-const fs = require('fs');
+import * as fs from 'fs';
 
-fs.readFile('./day-1.txt', 'utf8', (err, value) => {
-    day1(value);
-})
-
-function day1(input) {
+function run(input) {
     //split input string by double newline
     let base = input.split('\r\n\r\n');
 
@@ -15,8 +11,16 @@ function day1(input) {
     let sums = ints.map(elf => elf.reduce((p, c) => p + c, 0)).sort((a, b) => b - a);
 
     //list the first sum
-    console.log(sums[0])
+    console.log(`01a: ${sums[0]}`)
 
     //take the top 3 sums and sum them
-    console.log(sums.slice(0, 3).reduce((p, c) => p + c, 0))
+    console.log(`01b: ${sums.slice(0, 3).reduce((p, c) => p + c, 0)}`)
 }
+
+function execute() {
+    fs.readFile('./day 1/day-1.txt', 'utf8', (err, data) => {
+        run(data)
+    });
+}
+
+export { execute };

@@ -1,10 +1,6 @@
-const fs = require('fs');
+import * as fs from 'fs';
 
-fs.readFile('./day-5.txt', 'utf8', (err, value) => {
-    day5(value);
-})
-
-function day5(input) {
+function run(input) {
     let crates1 = [
         ['R', 'S', 'L', 'F', 'Q'],
         ['N', 'Z', 'Q', 'G', 'P', 'T'],
@@ -36,7 +32,12 @@ function day5(input) {
         crates2[cmd.to].push(...move2);
     });
 
-
-    console.log(crates1.map(x => x[x.length - 1]).join(''));
-    console.log(crates2.map(x => x[x.length - 1]).join(''));
+    console.log(`05a: ${crates1.map(x => x[x.length - 1]).join('')}`)
+    console.log(`05b: ${crates2.map(x => x[x.length - 1]).join('')}`)
 }
+
+function execute() {
+    fs.readFile('./day 5/day-5.txt', 'utf8', (err, value) => run(value))
+}
+
+export { execute }

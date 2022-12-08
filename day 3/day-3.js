@@ -1,10 +1,6 @@
-const fs = require('fs');
+import * as fs from 'fs';
 
-fs.readFile('./day-3.txt', 'utf8', (err, value) => {
-    day3(value);
-})
-
-function day3(input) {
+function run(input) {
     let backpacks = input.split('\n')
         .map(x => x.replace('\r', ''))
         .map(bp => bp.split('').map(x => x.charCodeAt(0)))
@@ -21,7 +17,12 @@ function day3(input) {
         sumTriples += backpacks[i].find(x => backpacks[i + 1].some(y => x == y) && backpacks[i + 2].some(z => x == z))
     }
 
-    console.log(backpacks.length)
-    console.log(backpacks.length / 3)
-    console.log(sumTriples)
+    console.log(`03a: ${sumDoubles}`)
+    console.log(`03b: ${sumTriples}`)
 }
+
+function execute() {
+    fs.readFile('./day 3/day-3.txt', 'utf8', (err, value) => run(value));
+}
+
+export { execute }
