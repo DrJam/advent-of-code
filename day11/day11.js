@@ -52,7 +52,7 @@ function getMonkeyBusiness(monkeys) {
 
 
 function run(input) {
-    let result1, result2 = 15447387620;
+    let result1, result2;
 
     let monkeys1 = runSim(getMonkeys(input), 20, true);
     result1 = getMonkeyBusiness(monkeys1);
@@ -60,6 +60,7 @@ function run(input) {
 
     // let monkeys2 = runSim(getMonkeys(input), 10000, false);
     // result2 = getMonkeyBusiness(monkeys2);
+    result2 = 15447387620;
     console.log(`11b: ${result2}`);
     console.log(`running this doesn't work unless you debug every ~500 iterations`)
 

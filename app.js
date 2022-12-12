@@ -1,6 +1,7 @@
 import day1 from "./day1/day1.js";
 import day10 from "./day10/day10.js";
 import day11 from "./day11/day11.js";
+import day12 from "./day12/day12.js";
 import day2 from "./day2/day2.js";
 import day3 from "./day3/day3.js";
 import day4 from "./day4/day4.js";
@@ -21,7 +22,8 @@ function run() {
     // day8.execute();
     // day9.execute();
     // day10.execute();
-    day11.execute();
+    // day11.execute();
+    day12.execute();
     // dayX.execute();
 }
 
