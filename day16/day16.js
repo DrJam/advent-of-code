@@ -28,40 +28,6 @@ function getNetwork(input) {
     return n
 }
 
-function dfs(node, network, cost, quality, path, paths, high) {
-    if (cost == 30 && quality > high[0]) {
-        paths[path] = quality
-        high[0] = quality
-        return;
-    } if (cost > 30) {
-        return;
-    }
-
-    if (!node.on) {
-        node.on = true
-        cost += 1
-        quality += node.rate * (30 - cost)
-    }
-    let neighbours = node.neighbours.filter(x => !network[x.ref].on && (cost + x.cost) <= 30)
-    neighbours.forEach((neighbour, i, ns) => {
-        let networkCopy = JSON.parse(JSON.stringify(network))
-        dfs(
-            networkCopy[neighbour.ref],
-            networkCopy,
-            cost + neighbour.cost,
-            quality,
-            path + ` ${neighbour.ref}`,
-            paths,
-            high
-        )
-    })
-    if (!neighbours.length && quality > high[0]) {
-        paths[path] = quality
-        high[0] = quality
-    }
-    return paths
-}
-
 function fwpr(network, start) {
     let dist = {}
     let next = {}
@@ -145,44 +111,163 @@ function getSimplifiedNetwork(network, next, valueNodes) {
     return simplified
 }
 
+function dfs(node, network, cost, quality, path, paths, high) {
+    if (cost == 30 && quality > high[0]) {
+        paths[path] = quality
+        high[0] = quality
+        return;
+    } if (cost > 30) {
+        return;
+    }
+
+    if (!node.on) {
+        node.on = true
+        cost += 1
+        quality += node.rate * (30 - cost)
+    }
+    let neighbours = node.neighbours.filter(x => !network[x.ref].on && (cost + x.cost) <= 30)
+    neighbours.forEach((neighbour, i, ns) => {
+        let networkCopy = JSON.parse(JSON.stringify(network))
+        dfs(
+            networkCopy[neighbour.ref],
+            networkCopy,
+            cost + neighbour.cost,
+            quality,
+            path + ` ${neighbour.ref}`,
+            paths,
+            high
+        )
+    })
+    if (!neighbours.length && quality > high[0]) {
+        paths[path] = quality
+        high[0] = quality
+    }
+    return paths
+}
+
 function part1(input) {
-    let t0 = performance.now()
     let network = getNetwork(input)
-    let t1 = performance.now()
-    console.log(`${~~(t1-t0)}ms to get network`)
     let next = fwpr(network, 'AA')
-    let t2 = performance.now()
-    console.log(`${~~(t2-t1)}ms to run Floyd-Warshall`)
     let valueNodes = getValueNodes(network)
-    let t3 = performance.now()
-    console.log(`${~~(t3-t2)}ms to get value nodes`)
     let simplifiedNetwork = getSimplifiedNetwork(network, next, valueNodes)
-    let t4 = performance.now()
-    console.log(`${~~(t4-t3)}ms to get simplified network`)
     let result = dfs(simplifiedNetwork['AA'], simplifiedNetwork, 0, 0, '', [], [0])
-    let t5 = performance.now()
-    console.log(`${~~(t5-t4)}ms to run dfs`)
 
     let high = 0, path = '';
     for (let [key, value] of Object.entries(result)) {
-        if (value > high){
+        if (value > high) {
             high = value
             path = key
         }
     }
-    
+
     return high
+}
+
+function dfs2({ network, nodeA, nodeB, costA, costB, quality, path, paths, high, maxCost }) {
+    if (costA == maxCost && costB == maxCost && quality > high[0]) {
+        paths[path] = quality
+        high[0] = quality
+        return;
+    }
+    if (costA > maxCost || costB > maxCost) {
+        return;
+    }
+
+    if (!nodeA.on) {
+        nodeA.on = true
+        costA += 1
+        quality += nodeA.rate * (maxCost - costA)
+    }
+    if (!nodeB.on) {
+        nodeB.on = true
+        costB += 1
+        quality += nodeB.rate * (maxCost - costB)
+    }
+
+    let valuableNeighboursA = nodeA.neighbours.filter(x => !network[x.ref].on && (costA + x.cost) <= maxCost)
+    let valuableNeighboursB = nodeB.neighbours.filter(x => !network[x.ref].on && (costA + x.cost) <= maxCost)
+    valuableNeighboursA.forEach(a => {
+        valuableNeighboursB.forEach(b => {
+            if (a.ref == b.ref) return;
+            let networkCopy = JSON.parse(JSON.stringify(network))
+            dfs2({
+                network: networkCopy,
+                nodeA: networkCopy[a.ref],
+                nodeB: networkCopy[b.ref],
+                costA: costA + a.cost,
+                costB: costB + b.cost,
+                quality: quality,
+                path: path + ` ${a.ref},${b.ref}`,
+                paths: paths,
+                high: high,
+                maxCost: maxCost
+            })
+        })
+    });
+
+    // let neighbours = node.neighbours.filter(x => !network[x.ref].on && (cost + x.cost) <= 30)
+    // neighbours.forEach((neighbour, i, ns) => {
+    //     let networkCopy = JSON.parse(JSON.stringify(network))
+    //     dfs2(
+    //         networkCopy[neighbour.ref],
+    //         networkCopy,
+    //         cost + neighbour.cost,
+    //         quality,
+    //         path + ` ${neighbour.ref}`,
+    //         paths,
+    //         high
+    //     )
+    // })
+    if (!valuableNeighboursA.length && !valuableNeighboursB.length && quality > high[0]) {
+        paths[path] = quality
+        high[0] = quality
+    }
+    return paths
+}
+
+function part2(input) {
+    let network = getNetwork(input)
+    let next = fwpr(network, 'AA')
+    let valueNodes = getValueNodes(network)
+    let simplifiedNetwork = getSimplifiedNetwork(network, next, valueNodes)
+    let result = dfs2({
+        network: simplifiedNetwork,
+        nodeA: simplifiedNetwork['AA'],
+        nodeB: simplifiedNetwork['AA'],
+        costA: 4,
+        costB: 4,
+        quality: 0,
+        path: '',
+        paths: [],
+        high: [0],
+        maxCost: 30
+    })
+
+    let high = 0, path = '';
+    for (let [key, value] of Object.entries(result)) {
+        if (value > high) {
+            high = value
+            path = key
+        }
+    }
+
+    return high
+
 }
 
 function run(input) {
     let result1, result2;
-
     let t0 = performance.now()
-    result1 = part1(input)
-    let t1 = performance.now()
-    console.log(`16a: ${~~(t1-t0)}ms ${result1}`);
 
-    console.log(`16b: ${result2}`);
+    // result1 = part1(input)
+
+    let t1 = performance.now()
+    console.log(`16a: ${~~(t1 - t0)}ms ${result1}`);
+
+    result2 = part2(input)
+
+    let t2 = performance.now()
+    console.log(`16b: ${~~(t2 - t1)}ms ${result2}`);
 }
 
 function execute() {
