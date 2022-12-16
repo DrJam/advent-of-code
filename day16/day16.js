@@ -1,5 +1,6 @@
 import { readFile } from 'node:fs/promises';
-import { newline, coord } from '../common/common.js';
+import { performance } from 'node:perf_hooks';
+import { coord, newline } from '../common/common.js';
 
 function getNetwork(input) {
     let n = {}
@@ -27,9 +28,10 @@ function getNetwork(input) {
     return n
 }
 
-function dfs(node, network, cost, quality, path, paths) {
-    if (cost == 30) {
+function dfs(node, network, cost, quality, path, paths, high) {
+    if (cost == 30 && quality > high[0]) {
         paths[path] = quality
+        high[0] = quality
         return;
     } if (cost > 30) {
         return;
@@ -42,18 +44,20 @@ function dfs(node, network, cost, quality, path, paths) {
     }
     let neighbours = node.neighbours.filter(x => !network[x.ref].on && (cost + x.cost) <= 30)
     neighbours.forEach((neighbour, i, ns) => {
+        let networkCopy = JSON.parse(JSON.stringify(network))
         dfs(
-            network[neighbour.ref],
-            network,
+            networkCopy[neighbour.ref],
+            networkCopy,
             cost + neighbour.cost,
             quality,
             path + ` ${neighbour.ref}`,
-            paths
+            paths,
+            high
         )
     })
-    if (!neighbours.length) {
-
+    if (!neighbours.length && quality > high[0]) {
         paths[path] = quality
+        high[0] = quality
     }
     return paths
 }
@@ -142,22 +146,42 @@ function getSimplifiedNetwork(network, next, valueNodes) {
 }
 
 function part1(input) {
+    let t0 = performance.now()
     let network = getNetwork(input)
+    let t1 = performance.now()
+    console.log(`${~~(t1-t0)}ms to get network`)
     let next = fwpr(network, 'AA')
+    let t2 = performance.now()
+    console.log(`${~~(t2-t1)}ms to run Floyd-Warshall`)
     let valueNodes = getValueNodes(network)
+    let t3 = performance.now()
+    console.log(`${~~(t3-t2)}ms to get value nodes`)
     let simplifiedNetwork = getSimplifiedNetwork(network, next, valueNodes)
-    let result = dfs(simplifiedNetwork['AA'], simplifiedNetwork, 0, 0, '', [])
+    let t4 = performance.now()
+    console.log(`${~~(t4-t3)}ms to get simplified network`)
+    let result = dfs(simplifiedNetwork['AA'], simplifiedNetwork, 0, 0, '', [], [0])
+    let t5 = performance.now()
+    console.log(`${~~(t5-t4)}ms to run dfs`)
 
-    // let test = path(next, 'AA', 'RU')
-    return result
+    let high = 0, path = '';
+    for (let [key, value] of Object.entries(result)) {
+        if (value > high){
+            high = value
+            path = key
+        }
+    }
+    
+    return high
 }
 
 function run(input) {
     let result1, result2;
 
+    let t0 = performance.now()
     result1 = part1(input)
+    let t1 = performance.now()
+    console.log(`16a: ${~~(t1-t0)}ms ${result1}`);
 
-    console.log(`16a: ${result1}`);
     console.log(`16b: ${result2}`);
 }
 
