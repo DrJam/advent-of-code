@@ -90,188 +90,112 @@ function getValueNodes(network) {
 }
 
 function getSimplifiedNetwork(network, next, valueNodes) {
-    let simplified = {};
+    let neighbours = [];
+    let value = []
     for (let i = 0; i < valueNodes.length; i++) {
         let from = valueNodes[i]
-        simplified[from] = {
-            rate: network[from].rate,
-            on: network[from].on,
-            neighbours: []
-        }
+        value[from] = network[from].rate
+        neighbours[from] = []
         for (let j = 0; j < valueNodes.length; j++) {
             let to = valueNodes[j]
-            if (from == to) continue
             let p = path(next, from, to)
-            simplified[from].neighbours.push({
-                ref: to,
-                cost: p.length
-            })
+            neighbours[from].push([to, p.length])
         }
     }
-    return simplified
+    return [neighbours, value]
 }
 
-function dfs(node, network, cost, quality, path, paths, high) {
-    if (cost == 30 && quality > high[0]) {
-        paths[path] = quality
-        high[0] = quality
-        return;
-    } if (cost > 30) {
+function dfs(node, neighbours, value, visited, cost, quality, path, paths, maxCost) {
+    if (cost > maxCost) {
         return;
     }
 
-    if (!node.on) {
-        node.on = true
+    if (!visited[node] && value[node]) {
+        visited[node] = true
         cost += 1
-        quality += node.rate * (30 - cost)
+        quality += value[node] * (maxCost - cost)
     }
-    let neighbours = node.neighbours.filter(x => !network[x.ref].on && (cost + x.cost) <= 30)
-    neighbours.forEach((neighbour, i, ns) => {
-        let networkCopy = JSON.parse(JSON.stringify(network))
+
+    paths.push([path.sort(), quality])
+    if (cost == maxCost) {
+        return;
+    }
+
+    let toSearch = neighbours[node].filter(([nRef, nCost]) => !visited[nRef] && ((cost + nCost) < maxCost))
+
+    toSearch.forEach(([nRef, nCost]) => {
         dfs(
-            networkCopy[neighbour.ref],
-            networkCopy,
-            cost + neighbour.cost,
+            nRef,
+            neighbours,
+            value,
+            { ...visited },
+            cost + nCost,
             quality,
-            path + ` ${neighbour.ref}`,
+            [...path, nRef],
             paths,
-            high
+            maxCost
         )
     })
-    if (!neighbours.length && quality > high[0]) {
-        paths[path] = quality
-        high[0] = quality
+    if (!toSearch.length && cost <= maxCost) {
+        paths.push([path.sort(), quality])
     }
     return paths
 }
 
-function part1(input) {
-    let network = getNetwork(input)
-    let next = fwpr(network, 'AA')
-    let valueNodes = getValueNodes(network)
-    let simplifiedNetwork = getSimplifiedNetwork(network, next, valueNodes)
-    let result = dfs(simplifiedNetwork['AA'], simplifiedNetwork, 0, 0, '', [], [0])
+function part1(paths) {
+    paths.sort((a, b) => b[1] - a[1])
+    return paths[0][1]
+}
 
-    let high = 0, path = '';
-    for (let [key, value] of Object.entries(result)) {
-        if (value > high) {
-            high = value
-            path = key
+function part2(paths) {
+    let pathsDown = [...paths]
+    let best = 0
+
+    pathsDown.forEach(([downPath, downQuality], i, list) => {
+        if (i > 20000) {
+            return;
         }
-    }
-
-    return high
-}
-
-function dfs2({ network, nodeA, nodeB, costA, costB, quality, path, paths, high, maxCost }) {
-    if (costA == maxCost && costB == maxCost && quality > high[0]) {
-        paths[path] = quality
-        high[0] = quality
-        return;
-    }
-    if (costA > maxCost || costB > maxCost) {
-        return;
-    }
-
-    if (!nodeA.on) {
-        nodeA.on = true
-        costA += 1
-        quality += nodeA.rate * (maxCost - costA)
-    }
-    if (!nodeB.on) {
-        nodeB.on = true
-        costB += 1
-        quality += nodeB.rate * (maxCost - costB)
-    }
-
-    let valuableNeighboursA = nodeA.neighbours.filter(x => !network[x.ref].on && (costA + x.cost) <= maxCost)
-    let valuableNeighboursB = nodeB.neighbours.filter(x => !network[x.ref].on && (costA + x.cost) <= maxCost)
-    valuableNeighboursA.forEach(a => {
-        valuableNeighboursB.forEach(b => {
-            if (a.ref == b.ref) return;
-            let networkCopy = JSON.parse(JSON.stringify(network))
-            dfs2({
-                network: networkCopy,
-                nodeA: networkCopy[a.ref],
-                nodeB: networkCopy[b.ref],
-                costA: costA + a.cost,
-                costB: costB + b.cost,
-                quality: quality,
-                path: path + ` ${a.ref},${b.ref}`,
-                paths: paths,
-                high: high,
-                maxCost: maxCost
-            })
-        })
-    });
-
-    // let neighbours = node.neighbours.filter(x => !network[x.ref].on && (cost + x.cost) <= 30)
-    // neighbours.forEach((neighbour, i, ns) => {
-    //     let networkCopy = JSON.parse(JSON.stringify(network))
-    //     dfs2(
-    //         networkCopy[neighbour.ref],
-    //         networkCopy,
-    //         cost + neighbour.cost,
-    //         quality,
-    //         path + ` ${neighbour.ref}`,
-    //         paths,
-    //         high
-    //     )
-    // })
-    if (!valuableNeighboursA.length && !valuableNeighboursB.length && quality > high[0]) {
-        paths[path] = quality
-        high[0] = quality
-    }
-    return paths
-}
-
-function part2(input) {
-    let network = getNetwork(input)
-    let next = fwpr(network, 'AA')
-    let valueNodes = getValueNodes(network)
-    let simplifiedNetwork = getSimplifiedNetwork(network, next, valueNodes)
-    let result = dfs2({
-        network: simplifiedNetwork,
-        nodeA: simplifiedNetwork['AA'],
-        nodeB: simplifiedNetwork['AA'],
-        costA: 4,
-        costB: 4,
-        quality: 0,
-        path: '',
-        paths: [],
-        high: [0],
-        maxCost: 30
+        let bestComplement = pathsDown.find(([compPath, compQuality]) => (
+            (downQuality + compQuality > best)
+            && !downPath.find(down => compPath.find(comp => down == comp))
+        ))
+        if (bestComplement) {
+            let [bestPath, bestQuality] = bestComplement
+            if (best < (downQuality + bestQuality)) {
+                best = downQuality + bestQuality
+            }
+        }
     })
 
-    let high = 0, path = '';
-    for (let [key, value] of Object.entries(result)) {
-        if (value > high) {
-            high = value
-            path = key
-        }
-    }
-
-    return high
-
+    return best
 }
 
 function run(input) {
-    let result1, result2;
     let t0 = performance.now()
+    let result1, result2;
+    let network = getNetwork(input)
+    let next = fwpr(network, 'AA')
+    let valueNodes = getValueNodes(network)
+    let [neighbours, value] = getSimplifiedNetwork(network, next, valueNodes)
 
-    // result1 = part1(input)
-
+    let paths1 = dfs('AA', neighbours, value, { AA: true }, 0, 0, [], [], 30)
+    let paths2 = dfs('AA', neighbours, value, { AA: true }, 4, 0, [], [], 30)
     let t1 = performance.now()
-    console.log(`16a: ${~~(t1 - t0)}ms ${result1}`);
+    console.log(`Pre-processing took ${~~(t1 - t0)}ms to calculate ${paths1.length + paths2.length} paths`);
 
-    result2 = part2(input)
-
+    result1 = part1(paths1)
     let t2 = performance.now()
-    console.log(`16b: ${~~(t2 - t1)}ms ${result2}`);
+    console.log(`16a: ${~~(t2 - t1)}ms ${result1}`);
+
+    result2 = part2(paths2)
+    let t3 = performance.now()
+    console.log(`Checked 20,000 highest quality paths against all complements`)
+    console.log(`16b: ${~~(t3 - t2)}ms ${result2}`);
 }
 
 function execute() {
     readFile('./day16/day16.txt').then(value => run(value.toString()));
+    // readFile('./day16/day16test.txt').then(value => run(value.toString()));
 }
 
 export default { execute }
