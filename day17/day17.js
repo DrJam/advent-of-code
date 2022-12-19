@@ -148,7 +148,7 @@ function run(input) {
     let t1 = performance.now()
     console.log(`Pre-processing took ${~~(t1 - t0)}ms`);
 
-    // result1 = part1(commands)
+    result1 = part1(commands)
     let t2 = performance.now()
     console.log(`17a: ${~~(t2 - t1)}ms ${result1}`);
 
