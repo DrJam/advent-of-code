@@ -7,7 +7,10 @@ import day14 from "./day14/day14.js";
 import day15 from "./day15/day15.js";
 import day16 from "./day16/day16.js";
 import day17 from "./day17/day17.js";
+import day18 from "./day18/day18.js";
+import day19 from "./day19/day19.js";
 import day2 from "./day2/day2.js";
+import day20 from "./day20/day20.js";
 import day3 from "./day3/day3.js";
 import day4 from "./day4/day4.js";
 import day5 from "./day5/day5.js";
@@ -33,7 +36,10 @@ function run() {
     // day14.execute();
     // day15.execute();
     // day16.execute();
-    day17.execute();
+    // day17.execute();
+    // day18.execute();
+    day19.execute();
+    // day20.execute()
 
     // dayX.execute();
 }
