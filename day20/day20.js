@@ -1,8 +1,7 @@
 import { readFile } from 'node:fs/promises';
-import { newline } from '../common/common.js';
 
 function getNums(input) {
-    return input.split(newline).map(x => parseInt(x))
+    return input.split('\r\n').map(x => parseInt(x))
 }
 
 function mix(nums, count) {
@@ -47,11 +46,21 @@ function part1(nums) {
 }
 
 function run(input) {
+    let t0 = performance.now()
     let result1, result2;
+
     let nums = getNums(input)
+
+    let t1 = performance.now()
+    console.log(`Pre-processing took ${~~(t1 - t0)}ms`);
+
     result1 = part1([...nums])
+    let t2 = performance.now()
+    console.log(`19a: ${~~(t2 - t1)}ms ${result1}`);
+
     result2 = part2([...nums])
-    console.log(result1, result2)
+    let t3 = performance.now()
+    console.log(`19b: ${~~(t3 - t2)}ms ${result2}`);
 }
 
 function execute() {
