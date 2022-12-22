@@ -4,6 +4,7 @@
   "description": "",
   "main": "app.js",
   "dependencies": {
+    "algebra.js": "^0.2.6",
     "mathjs": "^11.5.0",
     "node": "^19.2.0"
   },
