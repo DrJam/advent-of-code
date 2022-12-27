@@ -13,7 +13,7 @@ import day2 from "./day2/day2.js";
 import day20 from "./day20/day20.js";
 import day21 from "./day21/day21.js";
 // import day22 from "./day22/day22.js";
-// import day23 from "./day23/day23.js";
+import day23 from "./day23/day23.js";
 // import day24 from "./day24/day24.js";
 // import day25 from "./day25/day25.js";
 import day3 from "./day3/day3.js";
@@ -45,9 +45,9 @@ function run() {
     // day18.execute();
     // day19.execute();
     // day20.execute()
-    day21.execute()
+    // day21.execute()
     // day22.execute()
-    // day23.execute()
+    day23.execute()
     // day24.execute()
     // day25.execute()
     // dayX.execute();
