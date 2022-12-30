@@ -21,6 +21,16 @@ const TURN = {
     R: { L: 'U', R: 'D' }
 }
 
+const directionsClockwise = ['east', 'south', 'west', 'north'];
+const cubeFacesClockwise = {
+    u: ['r', 'f', 'l', 'b'],
+    r: ['u', 'b', 'd', 'f'],
+    f: ['u', 'r', 'd', 'l'],
+};
+cubeFacesClockwise.d = [...cubeFacesClockwise.u].reverse();
+cubeFacesClockwise.l = [...cubeFacesClockwise.r].reverse();
+cubeFacesClockwise.b = [...cubeFacesClockwise.f].reverse();
+
 function getMapLine1(line) {
     let chars = line.split('')
     let mapLine = {
@@ -147,9 +157,117 @@ function preProcess2(input) {
     return { faces, facemap, size, cmds }
 }
 
+function populateNeighbours2(face, direction, neighbour) {
+    const dirIdx = directionsClockwise.indexOf(direction)
+    const faceIdx = cubeFacesClockwise[face.face].indexOf(neighbour)
+
+    for (let i = 0; i < 4; ++i) {
+        const d = directionsClockwise[(dirIdx + i) % 4];
+        const s = cubeFacesClockwise[face.face][(faceIdx + i) % 4];
+        face[d] = s;
+    }
+
+
+}
+
+function calculateFaceConnections2(faces, faceMap) {
+    faces[0].face = 'u'
+
+    populateNeighbours2(faces[0], 'east', 'r')
+
+    const closed = new Set();
+    (function walk(n) {
+        closed.add(n);
+
+        const { i, j } = faces[n];
+        const neighbors = {
+            east: faceMap[i][j + 1],
+            south: faceMap[i + 1] && faceMap[i + 1][j],
+            west: faceMap[i][j - 1],
+            north: faceMap[i - 1] && faceMap[i - 1][j],
+        };
+
+        if (neighbors.east && !closed.has(neighbors.east)) {
+            faces[neighbors.east].face = faces[n].east;
+            populateNeighbours2(faces[neighbors.east], 'west', faces[n].face);
+            walk(neighbors.east);
+        }
+        if (neighbors.south && !closed.has(neighbors.south)) {
+            faces[neighbors.south].face = faces[n].south;
+            populateNeighbours2(faces[neighbors.south], 'north', faces[n].face);
+            walk(neighbors.south);
+        }
+        if (neighbors.west && !closed.has(neighbors.west)) {
+            faces[neighbors.west].face = faces[n].west;
+            populateNeighbours2(faces[neighbors.west], 'east', faces[n].face);
+            walk(neighbors.west);
+        }
+        if (neighbors.north && !closed.has(neighbors.north)) {
+            faces[neighbors.north].face = faces[n].north;
+            populateNeighbours2(faces[neighbors.north], 'south', faces[n].face);
+            walk(neighbors.north);
+        }
+    })(0);
+}
+
 function part2(info) {
     let { faces, facemap, size, cmds } = info
 
+    calculateFaceConnections2(faces, facemap)
+    let f = 0;
+    let x = 0;
+    let y = 0;
+    let dir = 'east';
+
+    for (let cmd of cmds) {
+        if (cmd === 'L') {
+            dir = directionsClockwise[(directionsClockwise.indexOf(dir) + 3) % 4];
+        } else if (cmd === 'R') {
+            dir = directionsClockwise[(directionsClockwise.indexOf(dir) + 1) % 4];
+        } else {
+            for (let i = 0; i < cmd; ++i) {
+                const [dx, dy] = {
+                    east: [1, 0],
+                    south: [0, 1],
+                    west: [-1, 0],
+                    north: [0, -1],
+                }[dir];
+
+                let newX = x + dx;
+                let newY = y + dy;
+                let newF = f;
+                let newDir = dir;
+
+                if (newX < 0 || newX >= size || newY < 0 || newY >= size) {
+                    newX = (newX + size) % size;
+                    newY = (newY + size) % size;
+                    newF = faces.findIndex(({ face }) => face === faces[f][dir]);
+
+                    const dirIdx = directionsClockwise.indexOf(dir);
+
+                    let newDirIdx = dirIdx;
+                    while (faces[newF][directionsClockwise[(newDirIdx + 2) % 4]] !== faces[f].face) {
+                        [newX, newY] = [size - 1 - newY, newX];
+                        newDirIdx = (newDirIdx + 1) % 4;
+                    }
+                    newDir = directionsClockwise[newDirIdx];
+                }
+
+                if (faces[newF].map[newY][newX] === '#') {
+                    break;
+                }
+
+                x = newX;
+                y = newY;
+                f = newF;
+                dir = newDir;
+            }
+        }
+    }
+
+    const i = faces[f].i * size + y + 1
+    const j = faces[f].j * size + x + 1;
+    return 1000 * i + 4 * j + { east: 0, south: 1, west: 2, north: 3 }[dir];
 }
 
 function run(input) {
@@ -161,7 +279,7 @@ function run(input) {
     let t1 = performance.now()
     console.log(`Pre-processing took ${~~(t1 - t0)}ms`);
 
-    // result1 = part1(map1, cmds1)
+    result1 = part1(map1, cmds1)
     let t2 = performance.now()
     console.log(`22a: ${~~(t2 - t1)}ms ${result1}`);
 
@@ -171,8 +289,8 @@ function run(input) {
 }
 
 function execute() {
-    // readFile('./day22/day22.txt').then(value => run(value.toString()));
-    readFile('./day22/day22.test.txt').then(value => run(value.toString()));
+    readFile('./day22/day22.txt').then(value => run(value.toString()));
+    // readFile('./day22/day22.test.txt').then(value => run(value.toString()));
 }
 
 export default { execute }

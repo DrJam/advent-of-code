@@ -46,9 +46,9 @@ function run() {
     // day19.execute();
     // day20.execute()
     // day21.execute()
-    // day22.execute()
+    day22.execute()
     // day23.execute()
-    day24.execute()
+    // day24.execute()
     // day25.execute()
 }
 
