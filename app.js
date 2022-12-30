@@ -25,31 +25,31 @@ import day8 from "./day8/day8.js";
 import day9 from "./day9/day9.js";
 
 function run() {
-    // day1.execute();
-    // day2.execute();
-    // day3.execute();
-    // day4.execute();
-    // day5.execute();
-    // day6.execute();
-    // day7.execute();
-    // day8.execute();
-    // day9.execute();
-    // day10.execute();
-    // day11.execute();
-    // day12.execute();
-    // day13.execute();
-    // day14.execute();
-    // day15.execute();
-    // day16.execute();
-    // day17.execute();
-    // day18.execute();
-    // day19.execute();
-    // day20.execute()
-    // day21.execute()
+    day1.execute()
+    day2.execute()
+    day3.execute()
+    day4.execute()
+    day5.execute()
+    day6.execute()
+    day7.execute()
+    day8.execute()
+    day9.execute()
+    day10.execute()
+    day11.execute()
+    day12.execute()
+    day13.execute()
+    day14.execute()
+    day15.execute()
+    day16.execute()
+    day17.execute()
+    day18.execute()
+    day19.execute()
+    day20.execute()
+    day21.execute()
     day22.execute()
-    // day23.execute()
-    // day24.execute()
-    // day25.execute()
+    day23.execute()
+    day24.execute()
+    day25.execute()
 }
 
 run();

@@ -19,7 +19,6 @@ function runSim(monkeys, maxRounds, divByThree) {
     let maxFactor = monkeys.reduce((p, c) => p * c.testFactor, 1);
 
     for (let round = 0; round < maxRounds; round++) {
-        if (!(round % 500)) debugger;
         for (let m = 0; m < monkeys.length; m++) {
             let monkey = monkeys[m];
             let counter = 0;
