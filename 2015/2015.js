@@ -6,6 +6,8 @@ import day5 from "./day-5/day-5.js";
 import day6 from "./day-6/day-6.js";
 import day7 from "./day-7/day-7.js";
 import day8 from "./day-8/day-8.js";
+import day9 from "./day-9/day-9.js";
+import day10 from "./day-10/day-10.js";
 
 function run() {
     // day1.execute()
@@ -15,7 +17,9 @@ function run() {
     // day5.execute()
     // day6.execute()
     // day7.execute()
-    day8.execute()
+    // day8.execute()
+    // day9.execute()
+    day10.execute()
 }
 
 export { run }
