@@ -32,12 +32,7 @@ function processUnknownItem(item, ignore) {
 }
 
 function part1(data) {
-    let sums = []
-    for (const key in data) {
-        sums.push(processUnknownItem(data[key]))
-    }
-    console.log(sums)
-    return sums.reduce((p, c) => p + c, 0)
+    return processUnknownItem(data)
 }
 
 function preProcessForPart2(input) {
@@ -45,13 +40,7 @@ function preProcessForPart2(input) {
 }
 
 function part2(data) {
-    let sums = []
-    for (const key in data) {
-        sums.push(processUnknownItem(data[key], 'red'))
-    }
-    console.log(sums)
-    return sums.reduce((p, c) => p + c, 0)
-
+    return processUnknownItem(data, 'red')
 }
 
 function run(input) {
