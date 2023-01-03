@@ -8,6 +8,7 @@ import day7 from "./day-7/day-7.js";
 import day8 from "./day-8/day-8.js";
 import day9 from "./day-9/day-9.js";
 import day10 from "./day-10/day-10.js";
+import day11 from "./day-11/day-11.js";
 
 function run() {
     // day1.execute()
@@ -19,7 +20,8 @@ function run() {
     // day7.execute()
     // day8.execute()
     // day9.execute()
-    day10.execute()
+    // day10.execute()
+    day11.execute()
 }
 
 export { run }
