@@ -4,9 +4,10 @@ import day3 from "./day3/run.js";
 import day4 from "./day4/run.js";
 import day5 from "./day5/run.js";
 import day6 from "./day6/run.js";
+import day7 from "./day7/run.js";
 
 function run() {
-    day6.execute()
+  day7.execute();
 }
 
-export { run }
+export { run };
