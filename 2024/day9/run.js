@@ -156,25 +156,18 @@ function getChecksum2(initial) {
       data.push(id);
     }
   });
-  console.log(data.join(""));
-  let sum = 0;
-  for (let i = 0; i < data.length; i++) {
-    if (data[i] !== ".") {
-      sum += parseInt(data[i], 10) * i;
-    }
-  }
-  return sum;
+  return getChecksum(data);
 }
 
 function run(input) {
   let lines = common.getLines(input);
   let data = getDataPart1(lines);
   let data2 = getDataPart2(lines);
-  // let sortedData = getSortedData(data);
-  // let checksum = getChecksum(sortedData);
+  let sortedData = getSortedData(data);
+  let checksum = getChecksum(sortedData);
   let sortedData2 = getSortedData2(data2);
   let checksum2 = getChecksum2(sortedData2);
-  console.log("part 1", 1928, 6154342787400);
+  console.log("part 1", 1928, checksum);
   console.log("part 2", 2858, checksum2);
 }
 
