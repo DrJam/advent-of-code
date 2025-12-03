@@ -7,8 +7,8 @@ function run(input) {
 }
 
 function execute() {
-  readFile("./2025/dayX/test.txt").then((value) => run(value.toString()));
-  readFile("./2025/dayX/input.txt").then((value) => run(value.toString()));
+  readFile("./2025/day3/test.txt").then((value) => run(value.toString()));
+  readFile("./2025/day3/input.txt").then((value) => run(value.toString()));
 }
 
 export default { execute };

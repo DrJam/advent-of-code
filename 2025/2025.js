@@ -1,7 +1,7 @@
-import day1 from "./day1/run.js";
+import day3 from "./day3/run.js";
 
 function run() {
-  day1.execute();
+  day3.execute();
 }
 
 export { run };
