@@ -43,7 +43,7 @@ function getIngredientCount(mergedRanges) {
 }
 
 function getPart2(ranges) {
-  ranges.sort((a, b) => a[0] - b[0]); // sort ranges by min value
+  ranges.sort((a, b) => a[MIN] - b[MIN]); // sort ranges by min value
   let mergedRanges = getMergedRanges(ranges);
   let ingredientCount = getIngredientCount(mergedRanges);
   return ingredientCount;
