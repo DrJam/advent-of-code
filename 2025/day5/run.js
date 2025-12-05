@@ -52,7 +52,7 @@ function getPart2(ranges) {
 function run(input) {
   let [ranges, ingredients] = common.getGroups(input);
   ranges = common.getLines(ranges).map((line) => line.split("-").map((num) => parseInt(num, 10)));
-  ingredients = common.getLines(ingredients).map((char) => parseInt(char, 10));
+  ingredients = common.getLines(ingredients).map((line) => parseInt(line, 10));
 
   let part1 = getPart1(ranges, ingredients);
   let part2 = getPart2(ranges);
