@@ -1,7 +1,7 @@
 import { readFile } from "node:fs/promises";
 import * as common from "../../common/common.js";
 
-function moveToBounds(current) {
+function moveWithinBounds(current) {
   while (current > 99) {
     current -= 100;
   }
@@ -17,20 +17,20 @@ function applyShift(current, number, operator) {
   return current + number * operator;
 }
 function applyShiftSlowlyAndCountZeroes(
-  current,
-  number,
-  operator,
-  slowZeroCount
+  currentValue,
+  magnitude,
+  plusOrMinusOne,
+  zeroHitCount
 ) {
-  while (number > 0) {
-    current += operator;
-    current = moveToBounds(current);
-    if (current == 0) {
-      slowZeroCount += 1;
+  while (magnitude > 0) {
+    currentValue += plusOrMinusOne;
+    currentValue = moveWithinBounds(currentValue);
+    if (currentValue == 0) {
+      zeroHitCount += 1;
     }
-    number--;
+    magnitude--;
   }
-  return [current, slowZeroCount];
+  return [currentValue, zeroHitCount];
 }
 
 function run(input) {
@@ -50,7 +50,7 @@ function run(input) {
       operator,
       slowZeroCount
     );
-    current = moveToBounds(current);
+    current = moveWithinBounds(current);
 
     if (current == 0) {
       zeroCount += 1;
